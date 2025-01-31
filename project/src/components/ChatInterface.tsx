@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Message } from './Message';
 import type { Message as MessageType } from '../types';
 import { Trash2, Share2 } from 'lucide-react';
@@ -9,6 +9,15 @@ interface ChatInterfaceProps {
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onClear }) => {
+  const chatEndRef = useRef<HTMLDivElement | null>(null); // Reference to the end of the chat
+
+  // Auto-scroll to the bottom whenever the messages change
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]); // Runs whenever the messages change
+
   const handleShare = () => {
     // Share functionality can be implemented here
     console.log('Share clicked');
@@ -42,6 +51,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onClear 
         {messages.map((message) => (
           <Message key={message.id} message={message} />
         ))}
+        
+        {/* This div will be scrolled to automatically */}
+        <div ref={chatEndRef} />
       </div>
     </div>
   );
